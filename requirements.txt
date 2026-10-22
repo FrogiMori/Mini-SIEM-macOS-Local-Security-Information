@@ -1,3 +1,16 @@
-fastapi
-uvicorn
-pytest
+# Mini-SIEM dependencies
+# All packages below are available in the system Python (Homebrew) on macOS.
+# Install with: pip3 install -r requirements.txt
+# Or use the venv: source .venv/bin/activate && pip install -r requirements.txt
+
+# Web dashboard
+flask>=3.0.0
+
+# Pretty CLI output (optional, used by rich-based features)
+rich>=13.0.0
+
+# Testing
+pytest>=8.0.0
+
+# Standard library only (no extra deps needed):
+#   sqlite3, json, subprocess, plistlib, socket, pathlib, datetime, logging
