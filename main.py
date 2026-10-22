@@ -11,6 +11,7 @@ Usage:
     python3 main.py investigate <id>       Show forensic timeline for incident <id>
     python3 main.py run [<N>]             Full pipeline: collect → store → detect
     python3 main.py dashboard              Start the web dashboard (http://127.0.0.1:5000)
+    python3 main.py tui                    Launch the interactive SOC Terminal User Interface (TUI)
 """
 
 import sys
@@ -200,6 +201,12 @@ def cmd_dashboard():
         print("\nDashboard stopped.")
 
 
+def cmd_tui():
+    """Start the interactive SOC Level 1 Terminal User Interface."""
+    from tui.app import run_tui
+    run_tui()
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -230,6 +237,9 @@ def main():
 
     elif args[0] == "dashboard":
         cmd_dashboard()
+
+    elif args[0] in ("tui", "ui", "console"):
+        cmd_tui()
 
     else:
         print(__doc__)

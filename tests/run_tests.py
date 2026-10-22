@@ -540,6 +540,8 @@ class TestSampleEvents(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    from tests.test_tui import TestTUIComponents, TestTUIApplication
+
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
 
@@ -549,6 +551,7 @@ if __name__ == "__main__":
         TestDetectionEngine, TestRiskScoring,
         TestParser, TestStorage, TestTimeline,
         TestCollectorParser, TestSampleEvents,
+        TestTUIComponents, TestTUIApplication,
     ]:
         suite.addTests(loader.loadTestsFromTestCase(cls))
 

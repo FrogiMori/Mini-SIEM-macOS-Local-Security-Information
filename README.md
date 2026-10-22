@@ -10,6 +10,10 @@ A lightweight, educational SIEM (Security Information and Event Management) syst
 
 ```
 mini-siem/
+├── tui/                # Interactive SOC Level 1 Terminal User Interface (Rich-based)
+│   ├── app.py          # Main TUI event loop, screens, and navigation
+│   ├── components.py   # Layouts, metrics cards, tables, dossier panels
+│   └── theme.py        # Cyber/SOC color palette and badges
 ├── collector/          # macOS data collection (ULS logs, processes, LaunchItems)
 │   └── macos.py
 ├── parser/             # Event normalization to canonical schema
@@ -25,9 +29,10 @@ mini-siem/
 │   └── app.py
 ├── data/               # Sample/simulation events
 │   └── sample_events.py
-├── tests/              # Unit tests (53 tests, no external deps)
+├── tests/              # Unit tests (67 tests, no external deps)
 │   ├── run_tests.py    # stdlib unittest runner
-│   └── test_detection.py  # pytest-compatible test file
+│   ├── test_detection.py  # Detection engine & rules tests
+│   └── test_tui.py     # TUI components & interaction tests
 ├── main.py             # CLI entry point
 ├── requirements.txt
 └── pyproject.toml
@@ -51,18 +56,14 @@ No other external packages required. All storage uses Python's built-in `sqlite3
 # 1. Clone / enter the project
 cd /Users/nam/Cyber_sec/mini-siem
 
-# 2. Initialize the database
-python3 main.py init
+# 2. Launch the interactive SOC Terminal User Interface (TUI)
+python3 main.py tui
 
-# 3. Load simulation data and run detection (safe, no real system changes)
-python3 main.py simulate
-
-# 4. View investigation report in the terminal
-python3 main.py investigate
-
-# 5. Start the web dashboard
-python3 main.py dashboard
-# Open http://127.0.0.1:5000 in your browser
+# Or run via CLI commands:
+python3 main.py init          # Initialize database
+python3 main.py simulate      # Load safe attack simulation
+python3 main.py investigate   # View forensic report in terminal
+python3 main.py dashboard     # Open web UI (http://127.0.0.1:5000)
 ```
 
 ---
@@ -71,6 +72,7 @@ python3 main.py dashboard
 
 | Command | Description |
 |---------|-------------|
+| `python3 main.py tui` | **Interactive SOC Terminal User Interface** (keyboard-driven console) |
 | `python3 main.py init` | Initialize SQLite database |
 | `python3 main.py collect [N]` | Collect last N minutes of macOS logs + processes + LaunchItems |
 | `python3 main.py detect` | Run detection rules on stored events |
@@ -78,6 +80,21 @@ python3 main.py dashboard
 | `python3 main.py investigate [id]` | Print forensic timeline and report |
 | `python3 main.py run [N]` | Full pipeline: collect → store → detect |
 | `python3 main.py dashboard` | Start Flask dashboard at http://127.0.0.1:5000 |
+
+---
+
+## Terminal User Interface (TUI)
+
+The project includes an interactive terminal user interface built with `rich` for an elite Blue Team SOC Level 1 operational experience:
+
+- **[1] Overview**: Real-time KPI counters (Events, Critical/High/Med/Low Alerts), Sensor health, and quick actions.
+- **[2] Alerts Console**: Interactive table of detected threats. Select with `↑/↓` or `j/k`, press `Enter` to open the full Alert Investigation Dossier, and `f` to cycle severity filters.
+- **[3] Events Stream**: Live browse normalized macOS events. Press `/` to filter by keyword or process name.
+- **[4] Timeline**: Chronological forensic timeline correlating both system events and triggered alerts.
+- **[5] Simulate**: One-key safe attack simulation (`S`) generating real-time correlation alerts without touching system configurations.
+- **[6] Collect**: Live macOS sensor collector (`C`) harvesting ULS logs and LaunchAgents.
+- **[7] Report**: Formatted SOC Level 1 Incident Report viewer with exportable playbooks.
+- **[Q] Quit**: Cleanly exit back to shell.
 
 ---
 
