@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Database (runtime artifact — don't commit)
+data/siem.db
+data/*.db
+
+# macOS
+.DS_Store
+*.swp
+
+# IDE
+.vscode/
+.idea/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
