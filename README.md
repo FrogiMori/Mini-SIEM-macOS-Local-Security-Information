@@ -83,18 +83,48 @@ python3 main.py dashboard     # Open web UI (http://127.0.0.1:5000)
 
 ---
 
-## Terminal User Interface (TUI)
+## FrogiSIEM Terminal User Interface (TUI Dashboard)
 
-The project includes an interactive terminal user interface built with `rich` for an elite Blue Team SOC Level 1 operational experience:
+FrogiSIEM features a full-screen, keyboard-driven Terminal User Interface built with **Textual** and **Rich** following a dark SOC aesthetic:
+- **Background**: Near-black (`#07090e` / `#0d1117`)
+- **Primary Accent**: Neon Green (`#00ff66` / `#10b981`)
+- **Alert Colors**: Critical/Red (`#ef4444`), Medium/Amber (`#f59e0b`), Info/Blue (`#38bdf8`)
+- **Responsive Layout**: Adapts dynamically to Mac terminal windows with zero horizontal jitter.
 
-- **[1] Overview**: Real-time KPI counters (Events, Critical/High/Med/Low Alerts), Sensor health, and quick actions.
-- **[2] Alerts Console**: Interactive table of detected threats. Select with `↑/↓` or `j/k`, press `Enter` to open the full Alert Investigation Dossier, and `f` to cycle severity filters.
-- **[3] Events Stream**: Live browse normalized macOS events. Press `/` to filter by keyword or process name.
-- **[4] Timeline**: Chronological forensic timeline correlating both system events and triggered alerts.
-- **[5] Simulate**: One-key safe attack simulation (`S`) generating real-time correlation alerts without touching system configurations.
-- **[6] Collect**: Live macOS sensor collector (`C`) harvesting ULS logs and LaunchAgents.
-- **[7] Report**: Formatted SOC Level 1 Incident Report viewer with exportable playbooks.
-- **[Q] Quit**: Cleanly exit back to shell.
+### 5 Dedicated Investigation Screens
+
+1. **[1] Overview Dashboard**:
+   - Header with Host identity, arm64 Apple Silicon telemetry, and collector health.
+   - 4 Summary Cards: Real count of Total Events, Critical/High Alerts, Medium Alerts, and Online Sensors.
+   - Split layout: Live recent event stream preview alongside active detection engine status and rule registry.
+2. **[2] Interactive Event Stream**:
+   - DataTable of normalized security events with keyboard arrow navigation.
+   - Search bar (`/`) filtering by description, process name, or subsystem.
+   - Severity and Source filter dropdowns.
+   - Side dossier updating dynamically on row selection with normalized identity, process PID, and raw JSON.
+3. **[3] Alerts Triage Console**:
+   - All correlated threat alerts with color-coded severity badges and confidence ratings.
+   - Detailed Threat Investigation Dossier displaying triggering reasons, evidence chips, and Level 1 SOC response playbooks.
+4. **[4] Investigation & Timeline**:
+   - Chronological forensic timeline correlating system events and alert triggers.
+   - Integrated Forensic Incident Report viewer.
+5. **[5] Sensors & Collector Health**:
+   - Health diagnostics for macOS Unified Logging System (`log show`), Process Telemetry (`ps`), and LaunchItems (`plistlib`).
+   - One-key triggers: `[C]` for live 1-minute collection, `[S]` for safe attack simulation suite.
+
+### Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `1`–`5` | Switch directly between the 5 dashboard views |
+| `↑` / `↓` | Navigate rows in DataTables |
+| `Enter` | Inspect selected event or alert in full detail dossier |
+| `/` | Focus search bar in Events view |
+| `R` | Non-blocking data reload and sensor check |
+| `C` | Trigger live macOS telemetry collection (runs in background worker) |
+| `S` | Trigger safe attack simulation (runs in background worker) |
+| `Esc` | Return to Overview screen |
+| `Q` | Safely exit FrogiSIEM |
 
 ---
 
@@ -119,20 +149,21 @@ Each alert includes:
 ## Running Tests
 
 ```bash
-# No external dependencies required
+# Run complete test suite (70 tests, including async Textual TUI tests)
 python3 tests/run_tests.py
 
-# If pytest is installed:
-python3 -m pytest tests/test_detection.py -v
+# Or run with pytest:
+pytest tests/ -v
 ```
 
-**53 tests covering:**
+**70 tests covering:**
 - All 5 detection rules (true positive + false positive cases)
 - Detection engine (empty input, malformed events, deduplication)
 - Parser normalization (ULS events, processes, LaunchItems)
-- Storage layer (insert, retrieve, stats)
+- Storage layer (insert, retrieve, stats, empty DB safety)
 - Timeline and report generation
 - Simulation data integrity
+- Textual TUI asynchronous pilot tests (views, search, filters, dossiers, background workers)
 
 ---
 

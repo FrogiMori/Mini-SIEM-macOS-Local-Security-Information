@@ -202,9 +202,9 @@ def cmd_dashboard():
 
 
 def cmd_tui():
-    """Start the interactive SOC Level 1 Terminal User Interface."""
-    from tui.app import run_tui
-    run_tui()
+    """Start the interactive FrogiSIEM Textual TUI dashboard."""
+    from tui.app import run_app
+    run_app()
 
 
 # ---------------------------------------------------------------------------

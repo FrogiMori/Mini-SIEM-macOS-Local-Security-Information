@@ -12,7 +12,8 @@ _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from tui.app import MiniSiemTUI
+from tui.app import FrogiSIEMApp
+from tui.state import FrogiSIEMState
 from tui.components import (
     render_alert_detail_panel,
     render_alerts_table,
@@ -113,43 +114,27 @@ class TestTUIComponents(unittest.TestCase):
         self.assertIsNotNone(panel)
 
 
-class TestTUIApplication(unittest.TestCase):
-    """Test full TUI application controller state and operations."""
+class TestFrogiSIEMState(unittest.TestCase):
+    """Test full FrogiSIEM state management and data operations."""
 
     def setUp(self):
-        self.app = MiniSiemTUI()
+        self.state = FrogiSIEMState()
 
     def test_init_state(self):
-        self.assertEqual(self.app.active_tab, "overview")
-        self.assertIsNotNone(self.app.stats)
-        self.assertIsInstance(self.app.alerts, list)
-        self.assertIsInstance(self.app.events, list)
+        self.assertIsNotNone(self.state.stats)
+        self.assertIsInstance(self.state.alerts, list)
+        self.assertIsInstance(self.state.events, list)
+        self.assertIsInstance(self.state.timeline, list)
+        self.assertEqual(self.state.collector_status, "ONLINE")
 
-    def test_tab_navigation_rendering(self):
-        for tab in ["overview", "alerts", "events", "timeline", "simulate", "collect", "report"]:
-            self.app.active_tab = tab
-            # Drawing to string or console should not raise any exceptions
-            self.app.draw()
+    def test_report_generation(self):
+        rep = self.state.get_incident_report()
+        self.assertIsInstance(rep, str)
+        self.assertIn("INCIDENT INVESTIGATION REPORT", rep)
 
-    def test_inspect_alert(self):
-        if self.app.alerts:
-            self.app.selected_alert_idx = 0
-            self.app.inspect_selected_alert()
-            self.assertEqual(self.app.active_tab, "alert_detail")
-            self.assertIsNotNone(self.app.inspecting_alert)
-            self.app.draw()
-
-    def test_cycle_severity_filter(self):
-        init_filter = self.app.alert_severity_filter
-        self.app.cycle_severity_filter()
-        self.assertNotEqual(self.app.alert_severity_filter, init_filter)
-
-    def test_event_filter(self):
-        self.app.event_filter = "launchd"
-        self.app.refresh_data()
-        self.assertIsInstance(self.app.events, list)
-        self.app.event_filter = ""
-        self.app.refresh_data()
+    def test_state_reload(self):
+        self.state.reload()
+        self.assertIsNotNone(self.state.stats)
 
 
 if __name__ == "__main__":
