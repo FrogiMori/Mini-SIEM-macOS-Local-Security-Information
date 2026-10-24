@@ -54,7 +54,7 @@ No other external packages required. All storage uses Python's built-in `sqlite3
 
 ```bash
 # 1. Clone / enter the project
-cd /Users/nam/Cyber_sec/mini-siem
+cd /mini-siem
 
 # 2. Launch the interactive SOC Terminal User Interface (TUI)
 python3 main.py tui
